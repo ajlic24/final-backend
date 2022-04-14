@@ -12,11 +12,25 @@ class ApplicationController < Sinatra::Base
   end
 
   post "/ruby" do
-    Command.create(name: params[:name], description: params[:description], language: Language.find_by(name: "Ruby"))
+    ruby = Command.create(name: params[:name], description: params[:description], language: Language.find_by(name: "Ruby"))
+    ruby.to_json
   end
 
   post "/javascript" do
-    Command.create(name: params[:name], description: params[:description], language: Language.find_by(name: "Javascript"))
+    javascript = Command.create(name: params[:name], description: params[:description], language: Language.find_by(name: "Javascript"))
+    javascript.to_json
+  end
+
+  patch "/commands/:id" do
+    to_patch = Command.find(params[:id])
+    to_patch.update(name: params[:name], description: params[:description])
+    to_patch.to_json
+  end
+
+  delete "/commands/:id" do
+    to_delete = Command.find(params[:id])
+    to_delete.destroy
+    to_delete.to_json
   end
 
 end
