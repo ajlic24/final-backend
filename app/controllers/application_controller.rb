@@ -1,24 +1,31 @@
 class ApplicationController < Sinatra::Base
   set :default_content_type, 'application/json'
+
+  #---------------Language routes---------------------#
   
-  get "/ruby" do
-    ruby = Language.find_by(name: 'Ruby').commands
-    ruby.to_json(only: [:id, :name, :description])
+  get "/languages" do
+    Language.all.to_json
   end
 
-  get "/javascript" do
-    ruby = Language.find_by(name: 'Javascript').commands
-    ruby.to_json(only: [:id, :name, :description])
+  post "/languages" do
+    new_lang = Language.create(name: params[:name], description: params[:description])
+    new_lang.to_json
+  end
+  
+  #--------------Command routes-----------------------#
+
+  get "/commands" do
+    Command.all.to_json
   end
 
-  post "/ruby" do
-    ruby = Command.create(name: params[:name], description: params[:description], language: Language.find_by(name: "Ruby"))
-    ruby.to_json
+  get "/:lang" do
+    lang = Language.find_by(name: params[:lang]).commands
+    lang.to_json(only: [:id, :name, :description])
   end
 
-  post "/javascript" do
-    javascript = Command.create(name: params[:name], description: params[:description], language: Language.find_by(name: "Javascript"))
-    javascript.to_json
+  post "/commands" do
+    new = Command.create(name: params[:name], description: params[:description], language_id: params[:language_id])
+    new.to_json
   end
 
   patch "/commands/:id" do
